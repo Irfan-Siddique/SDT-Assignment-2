@@ -1,8 +1,14 @@
+fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=a")
+  .then((res) => res.json())
+  .then((data) => {
+    displayPlayers(data.meals.slice(0, 11));
+  });
+
 const displayPlayers = (data) => {
-  // console.log(data)
+  console.log(data)
   const playersContainer = document.getElementById("players-container");
   data.forEach((player) => {
-    // console.log(player)
+    console.log(player)
     const div = document.createElement("div");
     div.classList.add(
       "card",
@@ -12,30 +18,30 @@ const displayPlayers = (data) => {
       "bg-warning-subtle"
     );
     div.innerHTML = `
-            <img class="card-img mb-2" src="${player.strCutout}">
-            <p>Name: ${player.strPlayer}</p>
-            <p>Nationality: ${player.strNationality}</p>
-            <p>Sport: ${player.strTeam}</p>
-            <p>Sport: ${player.strSport}</p>
-            <p>Salary: ${player.strWage}</p>
-            <p>Description: ${player.strDescriptionEN
+            <img class="card-img mb-2" src="${player.strMealThumb}">
+            <p>Name: ${player.strMeal}</p>
+            <p>Category: ${player.strCategory}</p>
+            <p>Root: ${player.strArea}</p>
+            <p>Tags: ${player.strTags}</p>
+            <p>Ingredients: ${player.strIngredient1}</p>
+            <p>Instructions: ${player.strInstructions
               .split(" ")
               .slice(0, 10)
               .join(" ")}</p>
             <div class="d-flex justify-content-center gap-3 mb-2">
             <a href="http://${
-              player.strFacebook
+              player.strSource
             }" target="_blank" ><i class="bi bi-facebook"  style="font-size: 2rem; color: black"></i>
             </a>
             <a href="http://${
-              player.strInstagram
+              player.strSource
             }" target="_blank" ><i class="bi bi-instagram"  style="font-size: 2rem; color: black"></i>
             </a>
             </div>
 
             <div class="add-to-cart mb-2">
             <button type="button" class="btn btn-success" onclick="handleAddToCart(${
-              player.idPlayer
+              player.idMeal
             })">
             Add To Cart
             </button>
@@ -43,7 +49,7 @@ const displayPlayers = (data) => {
             <div class="details">
 
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="displaySinglePlayer(${
-              player.idPlayer
+              player.idMeal
             })">Details</button>
             </div>
 
@@ -52,17 +58,13 @@ const displayPlayers = (data) => {
   });
 };
 
-fetch("https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?t=Arsenal")
-  .then((res) => res.json())
-  .then((data) => {
-    displayPlayers(data.player.slice(0, 10));
-  });
+
 
 const searchedPlayers = (name) => {
-  fetch(`https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${name}`)
+  fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`)
     .then((res) => res.json())
     .then((data) => {
-      displayPlayers(data.player);
+      displayPlayers(data.meals);
     });
 };
 
@@ -83,7 +85,7 @@ const handleSearch = () => {
 };
 
 const handleAddToCart = (id) => {
-  fetch(`https://www.thesportsdb.com/api/v1/json/3/lookupplayer.php?id=${id}`)
+  fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`)
     .then((res) => res.json())
     .then((data) => {
       const cartCount = document.getElementById("count").innerText;
@@ -94,42 +96,42 @@ const handleAddToCart = (id) => {
         document.getElementById("count").innerHTML = convertedCartCount;
 
         const cartInfo = document.getElementById("cart-main-container");
-        data.players.forEach((player) => {
+        data.meals.forEach((player) => {
           const div = document.createElement("div");
           div.innerHTML = `
-    <h4>Name: ${player.strPlayer}</h4>
+    <h4>Name: ${player.strMeal}</h4>
        `;
           cartInfo.appendChild(div);
         });
       } else {
-        alert("can't add more than 11 players");
+        alert("can't add more than 11 foods");
       }
     });
 };
 
 const displaySinglePlayer = (id) => {
-  fetch(`https://www.thesportsdb.com/api/v1/json/3/lookupplayer.php?id=${id}`)
+  fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`)
     .then((res) => res.json())
     .then((data) => {
       // console.log(data)
 
-      player = data.players[0];
+      player = data.meals[0];
       // console.log(player)
-      // Create new modal content
+ 
       const singlePlayer = document.getElementById("modal-body");
 
       // const div = document.createElement("div");
       singlePlayer.innerHTML = `
-              <h5>name: ${player.strPlayer}</h5>
-              <h5>Team: ${player.strTeam}</h5>
-              <h5>Sport: ${player.strSport}</h5>
-              <h5>Gender: ${player.strGender}</h5>
-              <h5>Nationality: ${player.strNationality}</h5>
-              <h5>Birth Date: ${player.dateBorn}</h5>
-              <h5>Description: ${player.strDescriptionEN
-                .split(" ")
-                .slice(0, 30)
-                .join(" ")}</h5>
+              <h5>name: ${player.strMeal}</h5>
+              <h5>Category: ${player.strCategory}</h5>
+              <h5>Root: ${player.strArea}</h5>
+              <h5>Tags: ${player.strTags}</h5>
+              <h5>Ingredients: ${player.strIngredient1}</h5>
+              <h5>Ingredients: ${player.strIngredient2}</h5>
+              <h5>Description: Instructions: ${player.strInstructions
+        .split(" ")
+        .slice(0, 30)
+        .join(" ")}</h5>
 
     `;
 
